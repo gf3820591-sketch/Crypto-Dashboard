@@ -25,7 +25,7 @@ symbol: "BNB",
 price_usd: 598.75,
 market_cap_usd: 89000000000,
 percent_change_24h: 1.56,
-image: "https://assets.coingecko.com/coins/images/825/large/bnb-icon2.png"
+image: "img/bitcoin.png"
 },
 {
 id: "solana",
@@ -82,11 +82,11 @@ image: "https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.p
 },
 {
 id: "avalanche",
-name: "Avalanche",symbol: "AVAX",
+name: "Avalanche",symbol: "NFT",
 price_usd: 38.92,
 market_cap_usd: 14500000000,
 percent_change_24h: -2.10,
-image: "https://assets.coingecko.com/coins/images/12559/large/avalanche.png"
+image: "img/s7akti-nft-7045692.png"
 },
 {
 id: "shiba-inu",
@@ -157,7 +157,7 @@ symbol: "VET",
 price_usd: 0.03456,
 market_cap_usd: 2500000000,
 percent_change_24h: -0.34,
-image: "https://assets.coingecko.com/coins/images/1167/large/VeChain.png"
+image: "img/cripto-coin.png"
 },
 {
 id: "algorand",
@@ -166,7 +166,7 @@ symbol: "ALGO",
 price_usd: 0.18,
 market_cap_usd: 1500000000,
 percent_change_24h: 0.78,
-image: "https://assets.coingecko.com/coins/images/4380/large/algorand.png"
+image: "img/thedigitalartist-ethereum-6903901_1920.png"
 }
 ];
 
@@ -236,7 +236,7 @@ function filterByPerformance(data) {
 
 function sortData(data) {
     if (sort.value === "asc") {
-        return data.sort((a, b) => b.price_usd - a.price_usd);
+        return data.sort((a, b) => a.price_usd - b.price_usd);
     }
 
     if (sort.value === "desc") {
@@ -272,6 +272,15 @@ function formatCapital(capital) {
 function pintarMonedas(datos){
     contenedor.innerHTML = "";
 
+    if(datos.length === 0){
+        contenedor.innerHTML = `
+        <h2 class="empty">
+            No se encontraron criptomonedas.
+        </h2>
+        `;
+        return;
+    }
+
     datos.forEach(coin => {
         const clase = coin.percent_change_24h >= 0 ? "positive" : "negative";
         const flecha = coin.percent_change_24h >= 0 ? "▲" : "▼";
@@ -280,9 +289,9 @@ function pintarMonedas(datos){
         <div class="card">
             <img src="${coin.image}" alt="${coin.name}">
             <h2>${coin.name}</h2>
-            <p>Symbol: ${coin.symbol}</p>
-            <p>Precio: ${formatPrice(coin.price_usd)}</p>
-            <p>Market cap: ${formatCapital(coin.market_cap_usd)}</p>
+            <p><strong>Simbolo:</strong> ${coin.symbol}</p>
+            <p><strong>Precio:</strong> $${formatPrice(coin.price_usd)}</p>
+            <p><strong>Market cap:</strong> ${formatCapital(coin.market_cap_usd)}</p>
             <p class="${clase}">
                 ${flecha}${coin.percent_change_24h}%
             </p>
