@@ -170,45 +170,81 @@ image: "https://assets.coingecko.com/coins/images/4380/large/algorand.png"
 }
 ];
 
+const app = document.querySelector('#app');
+app.innerHTML = `
+    <header>
+        <h1>Crypto Dashboard</h1>
+        <p>Top Cryptocurrencies Market Overview</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="search" placeholder="🔍 Buscar criptomoneda...">
+    </div>
+
+    <div class="filter-container">
+        <select id="filter">
+            <option value="all">Todas</option>
+            <option value="up">Solo en verde 📈</option>
+            <option value="down">Solo en rojo 📉</option>
+        </select>
+    </div>
+
+    <div class="sort-container">
+        <select id="sort">
+            <option value="none">Sin orden</option>
+            <option value="asc">Precio ↑</option>
+            <option value="desc">Precio ↓</option>
+        </select>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <h3 id="totalCoins">0</h3>
+            <p>Total Coins</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="positiveCoins">0</h3>
+            <p>📈 Positive</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="negativeCoins">0</h3>
+            <p>📉 Negative</p>
+        </div>
+    </div>
+    <div class="container"></div>`;
 
 const contenedor = document.querySelector('.container');
-
-function pintarMonedas(datos){
-    contenedor.innerHTML = "";
-
-    datos.forEach(coin => {
-        const clase = coin.percent_change_24h >= 0 ? "positive" : "negative";
-        const flecha = coin.percent_change_24h >= 0 ? "▲" : "▼";
-        
-        contenedor.innerHTML+= `
-        <div class="card">
-            <img src="${coin.image}" alt="${coin.name}">
-            <h2>${coin.name}</h2>
-            <p>${coin.symbol}</p>
-            <p>Precio: ${formatPrice(coin.price_usd)}</p>
-            <p>${formatCapital(coin.market_cap_usd)}</p>
-            <p class="${clase}">
-                ${flecha}${coin.percent_change_24h}%
-            </p>
-        </div> 
-        `;
-    });
-}
 const buscador = document.querySelector("#search");
-pintarMonedas(cryptoData);
+const filter = document.querySelector('#filter');
+const sort = document.querySelector('#sort');
 
-buscador.addEventListener('input', () => {
-    const texto = buscador.value.toLowerCase();
+function filterByPerformance(data) {
+    const value = filter.value;
 
-    const resultado = cryptoData.filter(coin => 
-    coin.name.toLowerCase().includes(texto) ||
-    coin.symbol.toLowerCase().includes(texto)
-    );
-    
-    pintarMonedas(resultado);
+    if (value === "up") {
+        return data.filter(c => c.percent_change_24h >= 0);
+    }
 
-});
+    if (value === "down") {
+        return data.filter(c => c.percent_change_24h < 0);
+    }
 
+    return data;
+}
+
+function sortData(data) {
+    if (sort.value === "asc") {
+        return data.sort((a, b) => b.price_usd - a.price_usd);
+    }
+
+    if (sort.value === "desc") {
+        return data.sort((a, b) => b.price_usd - a.price_usd);
+    }
+
+    return data;
+}
 
 function formatPrice(price){
     if (price >= 1) {
@@ -221,6 +257,70 @@ function formatPrice(price){
     }
 }
 
+function formatCapital(capital) {
+    if (capital >= 1_000_000_000_000) {
+        return `$${(capital / 1_000_000_000_000).toFixed(2)}T`;
+    }
+
+    if (capital >= 1_000_000_000) {
+        return `$${(capital / 1_000_000_000).toFixed(2)}B`;
+    }
+
+    return `$${(capital / 1_000_000).toFixed(2)}M`;
+}
+
+function pintarMonedas(datos){
+    contenedor.innerHTML = "";
+
+    datos.forEach(coin => {
+        const clase = coin.percent_change_24h >= 0 ? "positive" : "negative";
+        const flecha = coin.percent_change_24h >= 0 ? "▲" : "▼";
+        
+        contenedor.innerHTML+= `
+        <div class="card">
+            <img src="${coin.image}" alt="${coin.name}">
+            <h2>${coin.name}</h2>
+            <p>Symbol: ${coin.symbol}</p>
+            <p>Precio: ${formatPrice(coin.price_usd)}</p>
+            <p>Market cap: ${formatCapital(coin.market_cap_usd)}</p>
+            <p class="${clase}">
+                ${flecha}${coin.percent_change_24h}%
+            </p>
+        </div> 
+        `;
+    });
+}
+
+function updateUI() {
+    let data = [...cryptoData];
+
+    const texto = buscador.value.toLowerCase();
+    data = data.filter(coin => 
+        coin.name.toLowerCase().includes(texto) ||
+        coin.symbol.toLowerCase().includes(texto)
+    );
+    
+    data = filterByPerformance(data);
+    data = sortData(data);
+    pintarMonedas(data);
+    updateStats(data);
+}
+
+function updateStats(data) {
+    document.getElementById("totalCoins").textContent = data.length;
+
+    const positive = data.filter(c => c.percent_change_24h >= 0).length;
+    const negative = data.length - positive;
+
+    document.getElementById("positiveCoins").textContent = positive;
+    document.getElementById("negativeCoins").textContent = negative;
+}
+
+buscador.addEventListener("input", updateUI);
+filter.addEventListener("change", updateUI);
+sort.addEventListener("change", updateUI);
+
+updateUI();
 function formatCapital(capital) {
     if (capital >= 1_000_000_000_000) {
         return `$${(capital / 1_000_000_000_000).toFixed(2)}T`;

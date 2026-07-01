@@ -47,6 +47,7 @@ header p{
     color: white;
     transition: .3s;
     border: 1px solid #1e293b;
+    animation: aparecer .4s ease;
 }
 
 .card h2{
@@ -56,6 +57,11 @@ header p{
 
 .card p{
     margin: 8px 0;
+}
+
+.card p:first-of-type{
+    color: #94a3b8;
+    font-weight: 600
 }
 
 .card img{
@@ -73,7 +79,7 @@ header p{
 }
 
 .positive{
-    color: rgb(6, 160, 6);
+    color: #22c55e;
     font-weight: bold;
 }
 
@@ -99,6 +105,49 @@ header p{
     border: 1px solid #1f2937;
 }
 
+.stat-card h3{
+    font-size: 2rem;
+    color: #60a5fa;
+    margin-bottom: 10px;
+}
+
+.stat-card p{
+    color: #94a3b8;
+}
+
+.search-container,
+.filter-container,
+.sort-container{
+    width: 90%;
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+input,
+select{
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #1f2937;
+    background: #111827;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
+
+input:focus,
+select:focus{
+    border-color: #60a5fa;
+}
+
+input{
+    transition: .3s;
+}
+
+input:focus{
+    box-shadow: 0 0 12px rgba(96, 165, 250,.35);
+}
+
 @media(max-width: 992px){
     .container{
         grid-template-columns: repeat(2, 1fr);
@@ -110,7 +159,25 @@ header p{
         grid-template-columns: 1fr;
     }
 
-    .header h1{
+    header h1{
         font-size: 2.2rem;
+    }
+}
+
+@media(max-width: 768px){
+    .stats{
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes aparecer{
+    from{
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translateY(0);
     }
 }
