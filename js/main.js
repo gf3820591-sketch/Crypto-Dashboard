@@ -289,9 +289,9 @@ function pintarMonedas(datos){
         <div class="card">
             <img src="${coin.image}" alt="${coin.name}">
             <h2>${coin.name}</h2>
-            <p><strong>Simbolo:</strong> ${coin.symbol}</p>
-            <p><strong>Precio:</strong> $${formatPrice(coin.price_usd)}</p>
-            <p><strong>Market cap:</strong> ${formatCapital(coin.market_cap_usd)}</p>
+            <p>${coin.symbol}</p>
+            <p>💵 ${formatPrice(coin.price_usd)}</p>
+            <p>🏦 ${formatCapital(coin.market_cap_usd)}</p>
             <p class="${clase}">
                 ${flecha}${coin.percent_change_24h}%
             </p>
